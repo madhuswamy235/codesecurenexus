@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NPM_FLAGS = "--legacy-peer-deps"
+
+# Netlify detects the Next.js App Router and applies its Next.js runtime
+# automatically. Keep the API and Socket.IO services on the separate backend
+# host configured in render.yaml.
