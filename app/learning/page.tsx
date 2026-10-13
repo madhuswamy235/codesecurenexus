@@ -1,0 +1,5 @@
+"use client";
+import ProtectedWorkspace from "@/components/common/ProtectedWorkspace";
+import WorkspaceHub from "@/components/common/WorkspaceHub";
+
+export default function LearningCenterPage() { return <ProtectedWorkspace eyebrow="Learning center"><WorkspaceHub title="SecureNexus Learning Center" description="Practice, learn, code and improve your technical skills." cards={[{ href: "/learning/coding", title: "Coding Lab", description: "Practice in Monaco with run, save and schematic support.", accent: "bg-cyan-400" }, { href: "/learning/dsa", title: "DSA Practice", description: "Work through focused problems across core data structures.", accent: "bg-orange-400" }, { href: "/learning/mcq", title: "MCQ Practice", description: "Explore questions with explanations and no proctored scoring.", accent: "bg-fuchsia-400" }, { href: "/learning/whiteboard", title: "Collaborative Whiteboard", description: "Draw, sketch flowcharts and collaborate through the existing realtime board." }, { href: "/learning/progress", title: "My Progress", description: "See tracked progress and identify the next learning focus.", accent: "bg-amber-400" }]} /></ProtectedWorkspace>; }

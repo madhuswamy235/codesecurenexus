@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: securenexus-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci --legacy-peer-deps
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        sync: false
+      - key: INITIAL_RECRUITER_NAME
+        sync: false
+      - key: INITIAL_RECRUITER_EMAIL
+        sync: false
+      - key: INITIAL_RECRUITER_PASSWORD
+        sync: false
+      - key: TURN_URLS
+        sync: false
+      - key: TURN_USERNAME
+        sync: false
+      - key: TURN_CREDENTIAL
+        sync: false
