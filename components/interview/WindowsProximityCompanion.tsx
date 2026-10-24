@@ -207,7 +207,7 @@ export default function WindowsProximityCompanion({
 
       {paired && activeDeviceCount > 0 && (
         <p role="status" className="mt-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-xs leading-5 text-amber-100">
-          Nearby Bluetooth signals were detected. Please check that no unapproved devices are being used, or discuss the result with the interviewer. This is an approximate signal count—not proof of a device, identity, or exact distance.
+          Nearby Bluetooth signals were detected. Disconnect Bluetooth devices that are not needed for the interview, then discuss the result with the interviewer. This is an approximate signal count—not proof of a device, identity, or exact distance.
         </p>
       )}
       {!checking && !available && (

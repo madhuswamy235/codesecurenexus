@@ -2,10 +2,12 @@
 
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import api, { getToken } from "@/lib/api";
 import config from "@/config";
 import { useAuth } from "@/hooks/useAuth";
 import RequireAuth from "@/components/auth/RequireAuth";
+import InterviewReadinessCheck from "@/components/interview/InterviewReadinessCheck";
 
 interface SessionResponse {
   interview?: {
@@ -38,6 +40,7 @@ interface SessionResponse {
 interface RoomScanRow { _id?: string; status?: string; expiresAt?: string; phoneAwaySelfReport?: boolean; media?: { index: number; originalName?: string; mimeType?: string }[] }
 
 export default function RecruiterInterviewSessionPage({ params }: { params: Promise<{ sessionId: string }> }) {
+  const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const { sessionId } = use(params);
   const [loading, setLoading] = useState(true);
@@ -101,7 +104,11 @@ export default function RecruiterInterviewSessionPage({ params }: { params: Prom
     try {
       const result = await api.post<SessionResponse>(`/interviews/${sessionId}/${action}`);
       setData(result.data ?? null);
-      setNotice(action === "start" ? "Interview started. The candidate lobby will open automatically." : "Interview ended.");
+      if (action === "start" && result.data?.interview?._id) {
+        router.push(`/interview?id=${encodeURIComponent(result.data.interview._id)}`);
+        return;
+      }
+      setNotice("Interview ended.");
     } catch (err) {
       setError(err instanceof Error ? err.message : `Unable to ${action} this interview.`);
     } finally {
@@ -208,6 +215,8 @@ export default function RecruiterInterviewSessionPage({ params }: { params: Prom
                 <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Candidate Join Link</p>
                 <p className="mt-2 break-all text-sm text-emerald-200">{joinLink}</p>
               </div>
+
+              {!(["ENDED", "CANCELLED"].includes(session?.status || "") || ["completed", "cancelled"].includes(interview.status || "")) && <InterviewReadinessCheck role="interviewer" />}
 
               <div className="rounded-xl border border-cyan-500/30 bg-cyan-500/5 p-4">
                 <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">Consented mobile room scan</p>

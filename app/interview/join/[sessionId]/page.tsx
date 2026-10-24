@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
+import InterviewReadinessCheck from "@/components/interview/InterviewReadinessCheck";
 import WindowsProximityCompanion from "@/components/interview/WindowsProximityCompanion";
 
 type ProximityStatus = "detected" | "none" | "unsupported" | "denied" | "error" | "not-run";
@@ -198,6 +199,7 @@ export default function InterviewJoinPage({ params }: { params: Promise<{ sessio
                 <p className="mt-2 text-xs leading-5 text-slate-400">
                   Use the invited candidate email. If you need an account, create one here—your invitation link will be saved and you’ll return to this page automatically after registration.
                 </p>
+                <InterviewReadinessCheck role="candidate" />
                 {session._id && interview._id && (
                   <WindowsProximityCompanion
                     sessionId={session._id}

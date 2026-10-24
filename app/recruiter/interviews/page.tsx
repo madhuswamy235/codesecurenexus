@@ -242,9 +242,18 @@ export default function RecruiterInterviewsPage() {
                       href={`/recruiter/interview/${created.sessionId ?? created._id ?? ""}`}
                       className="flex-1 rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-center font-semibold text-slate-100 hover:bg-slate-700"
                     >
-                      View Session
+                      Start as interviewer
                     </Link>
                   </div>
+                  <Link
+                    href={created.joinLink || "#"}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block w-full rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-center font-semibold text-emerald-100 hover:bg-emerald-500/20"
+                  >
+                    Open candidate start page
+                  </Link>
+                  <p className="text-xs leading-5 text-slate-500">Use the first button for your interviewer workspace. Send the candidate link, or open the second button in a separate candidate browser.</p>
                 </div>
               ) : (
                 <div className="flex h-full min-h-[260px] items-center justify-center text-slate-400">
