@@ -1,341 +1,38 @@
-"use client";
-
 import Link from "next/link";
-import {
-  ShieldCheck,
-  Brain,
-  Code2,
-  Users,
-  ArrowRight,
-  Sparkles,
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, Code2, FileText, ShieldCheck, Video } from "lucide-react";
 
+const steps = [
+  { number: "01", title: "Create an interview", text: "Add the role, candidate details, questions, and interview duration." },
+  { number: "02", title: "Share one link", text: "Your candidate receives a simple invitation link and joins from any browser." },
+  { number: "03", title: "Meet and evaluate", text: "Use the live room for video, chat, coding, assessments, and structured notes." },
+];
+
+const capabilities = [
+  { icon: Video, title: "Meet live", text: "A focused interview room with camera, microphone, chat, and participant status." },
+  { icon: Code2, title: "Work together", text: "Collaborative coding, questions, whiteboard, and a shared timer in one workspace." },
+  { icon: ShieldCheck, title: "Review fairly", text: "Optional browser and device signals help recruiters review the session with context." },
+  { icon: FileText, title: "Get a report", text: "Keep interview notes, scores, security events, and recommendations together." },
+];
 
 export default function Home() {
-
   return (
-
-    <main className="
-      min-h-screen
-      bg-gradient-to-br
-      from-slate-950
-      via-green-950
-      to-black
-      px-6
-      py-10
-    ">
-
-
-      <section className="
-        mx-auto
-        max-w-7xl
-      ">
-
-
-        {/* Navbar */}
-
-        <nav className="
-          flex
-          items-center
-          justify-between
-          rounded-2xl
-          border
-          border-white/10
-          bg-white/5
-          px-6
-          py-4
-          backdrop-blur-xl
-        ">
-
-
-          <h1 className="
-            text-3xl
-            font-bold
-            text-white
-          ">
-
-            Secure
-            <span className="text-green-400">
-              Nexus
-            </span>
-
-          </h1>
-
-
-
-          <Link
-            href="/login"
-            className="
-              rounded-xl
-              bg-green-600
-              px-6
-              py-3
-              font-semibold
-              text-white
-              hover:bg-green-500
-            "
-          >
-
-            Login
-
-          </Link>
-
-
-        </nav>
-
-
-
-
-
-        {/* Hero */}
-
-        <div className="
-          mt-20
-          grid
-          gap-12
-          lg:grid-cols-2
-          lg:items-center
-        ">
-
-
-          <div>
-
-
-            <div className="
-              inline-flex
-              items-center
-              gap-2
-              rounded-full
-              border
-              border-green-400/30
-              bg-green-400/10
-              px-4
-              py-2
-              text-green-300
-            ">
-
-              <Sparkles size={18}/>
-
-              Recruiter and Candidate Interview Platform
-
-            </div>
-
-
-
-            <h2 className="
-              mt-8
-              text-5xl
-              font-bold
-              leading-tight
-              text-white
-            ">
-
-              Secure AI Interview
-              <span className="text-green-400">
-                {" "}Workspace
-              </span>
-
-            </h2>
-
-
-
-            <p className="
-              mt-6
-              text-lg
-              text-gray-400
-            ">
-
-              Create candidate invitations, meet in a live interview room,
-              run MCQ and coding assessments, and review browser activity.
-
-            </p>
-
-
-
-
-            <div className="
-              mt-8
-              flex
-              gap-4
-            ">
-
-
-              <Link
-                href="/login"
-                className="
-                  flex
-                  items-center
-                  gap-2
-                  rounded-xl
-                  bg-green-600
-                  px-6
-                  py-3
-                  font-semibold
-                  text-white
-                "
-              >
-
-                Start Interview
-
-                <ArrowRight size={20}/>
-
-              </Link>
-
-              <Link
-                href="/assessment"
-                className="
-                  flex
-                  items-center
-                  gap-2
-                  rounded-xl
-                  border
-                  border-white/10
-                  bg-white/10
-                  px-6
-                  py-3
-                  font-semibold
-                  text-white
-                  hover:bg-white/20
-                "
-              >
-
-                My Assessments
-
-              </Link>
-
-
-            </div>
-
-
-          </div>
-
-
-
-
-
-          {/* Feature Card */}
-
-          <div className="
-            rounded-3xl
-            border
-            border-white/10
-            bg-white/5
-            p-8
-            backdrop-blur-xl
-          ">
-
-
-            <div className="
-              grid
-              gap-5
-              sm:grid-cols-2
-            ">
-
-
-              <Feature
-                icon={<ShieldCheck/>}
-                title="Interview Security"
-                text="Browser activity review and optional BLE proximity signals"
-              />
-
-
-              <Feature
-                icon={<Brain/>}
-                title="AI Analysis"
-                text="Smart interview performance evaluation"
-              />
-
-
-              <Feature
-                icon={<Code2/>}
-                title="Coding Test"
-                text="Real time coding assessment"
-              />
-
-
-              <Feature
-                icon={<Users/>}
-                title="Collaboration"
-                text="Interactive interview workspace"
-              />
-
-
-            </div>
-
-
-          </div>
-
-
-        </div>
-
-
+    <main className="min-h-screen overflow-hidden bg-[#f7faf9] text-slate-950">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8">
+        <Link href="/" className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-2xl bg-emerald-500 font-black text-white shadow-lg shadow-emerald-500/20">S</span><span className="text-lg font-bold tracking-tight">Secure<span className="text-emerald-600">Nexus</span></span></Link>
+        <div className="flex items-center gap-3"><Link href="/login" className="hidden rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-white sm:block">Sign in</Link><Link href="/register" className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-slate-900/10 hover:bg-slate-800">Create account</Link></div>
+      </nav>
+
+      <section className="mx-auto grid max-w-7xl gap-14 px-5 pb-20 pt-14 sm:px-8 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:pt-24">
+        <div><p className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-emerald-700"><span className="h-2 w-2 rounded-full bg-emerald-500" /> Interviews made simple</p><h1 className="mt-6 max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight text-slate-950 sm:text-6xl">A calmer way to run better technical interviews.</h1><p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">SecureNexus gives recruiters and candidates one clear place to meet, talk, code, and review the interview—without juggling multiple tools.</p><div className="mt-8 flex flex-wrap gap-3"><Link href="/register" className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3.5 font-semibold text-white shadow-xl shadow-emerald-600/20 hover:bg-emerald-500">Get started <ArrowRight size={18} /></Link><Link href="/login" className="rounded-xl border border-slate-300 bg-white px-5 py-3.5 font-semibold text-slate-700 hover:border-slate-400">Sign in</Link></div><div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-500">{["Browser-based", "No download for candidates", "Private by default"].map((item) => <span key={item} className="inline-flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-500" />{item}</span>)}</div></div>
+        <div className="relative rounded-[2rem] bg-slate-950 p-4 shadow-2xl shadow-slate-900/20 sm:p-6"><div className="flex items-center justify-between border-b border-white/10 pb-4"><div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-rose-400" /><span className="h-2.5 w-2.5 rounded-full bg-amber-400" /><span className="h-2.5 w-2.5 rounded-full bg-emerald-400" /></div><span className="text-xs text-slate-500">Live interview</span></div><div className="grid gap-3 pt-4 sm:grid-cols-[1.35fr_.65fr]"><div className="relative flex min-h-[280px] items-end overflow-hidden rounded-2xl bg-gradient-to-br from-slate-700 via-slate-800 to-slate-950 p-5"><div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_25%,rgba(16,185,129,.28),transparent_30%)]" /><div className="relative"><p className="text-xs uppercase tracking-[0.18em] text-emerald-300">Candidate</p><p className="mt-1 text-xl font-semibold text-white">Live technical interview</p><p className="mt-1 text-sm text-slate-400">Camera ready · Microphone ready</p></div></div><div className="space-y-3"><div className="flex min-h-[134px] items-end rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-950 p-4"><div><p className="text-xs uppercase tracking-[0.18em] text-emerald-100">Interviewer</p><p className="mt-1 font-semibold text-white">You are connected</p></div></div><div className="rounded-2xl border border-white/10 bg-white/5 p-4"><p className="text-xs text-slate-500">Session status</p><p className="mt-2 text-sm font-semibold text-emerald-300">● In progress</p><p className="mt-3 text-xs text-slate-500">01:24:36 remaining</p></div></div></div><div className="mt-4 flex items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3"><span className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-slate-300">⌕</span><span className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-slate-300">◉</span><span className="grid h-9 w-9 place-items-center rounded-full bg-rose-500 text-white">×</span><span className="ml-auto text-xs text-slate-500">Video, chat, code &amp; notes</span></div></div>
       </section>
 
+      <section className="border-y border-slate-200 bg-white px-5 py-20 sm:px-8"><div className="mx-auto max-w-7xl"><div className="max-w-2xl"><p className="text-sm font-bold uppercase tracking-[0.18em] text-emerald-600">How it works</p><h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Three steps from invitation to insight.</h2><p className="mt-4 leading-7 text-slate-600">Every screen has one clear next action, so recruiters can focus on the conversation and candidates can focus on showing their skills.</p></div><div className="mt-12 grid gap-5 md:grid-cols-3">{steps.map((step) => <div key={step.number} className="rounded-2xl border border-slate-200 bg-[#f7faf9] p-6"><p className="text-sm font-bold text-emerald-600">{step.number}</p><h3 className="mt-8 text-xl font-bold">{step.title}</h3><p className="mt-3 leading-7 text-slate-600">{step.text}</p></div>)}</div></div></section>
 
+      <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8"><div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="text-sm font-bold uppercase tracking-[0.18em] text-emerald-600">One workspace</p><h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Everything you need, in the right place.</h2></div><Link href="/login" className="inline-flex items-center gap-2 font-semibold text-emerald-700 hover:text-emerald-600">Open your workspace <ArrowRight size={18} /></Link></div><div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{capabilities.map(({ icon: Icon, title, text }) => <div key={title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="grid h-11 w-11 place-items-center rounded-xl bg-emerald-50 text-emerald-600"><Icon size={22} /></div><h3 className="mt-5 font-bold">{title}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{text}</p></div>)}</div></section>
+
+      <section className="mx-auto max-w-7xl px-5 pb-20 sm:px-8"><div className="rounded-3xl bg-emerald-600 px-6 py-10 text-white sm:px-10"><div className="flex flex-col justify-between gap-8 sm:flex-row sm:items-center"><div><p className="text-sm font-semibold text-emerald-100">Ready when you are</p><h2 className="mt-2 text-3xl font-bold tracking-tight">Start your next interview with less friction.</h2></div><Link href="/register" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-emerald-700 hover:bg-emerald-50">Create free account <ArrowRight size={18} /></Link></div></div></section>
+      <footer className="border-t border-slate-200 px-5 py-6 text-center text-sm text-slate-500">SecureNexus · Focused interviews, clearer decisions.</footer>
     </main>
-
   );
-}
-
-
-
-
-
-function Feature({
-  icon,
-  title,
-  text,
-}:{
-  icon:React.ReactNode;
-  title:string;
-  text:string;
-}) {
-
-
-  return (
-
-    <div className="
-      rounded-2xl
-      bg-black/30
-      p-5
-    ">
-
-
-      <div className="
-        text-green-400
-      ">
-
-        {icon}
-
-      </div>
-
-
-
-      <h3 className="
-        mt-4
-        font-bold
-        text-white
-      ">
-
-        {title}
-
-      </h3>
-
-
-
-      <p className="
-        mt-2
-        text-sm
-        text-gray-400
-      ">
-
-        {text}
-
-      </p>
-
-
-    </div>
-
-  );
-
 }

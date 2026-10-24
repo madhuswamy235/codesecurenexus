@@ -14,7 +14,7 @@ export interface AuthUser {
 }
 
 export function canCreateInterviewsForRole(role?: string | null): boolean {
-  return ['admin', 'recruiter', 'interviewer', 'candidate'].includes(role?.trim().toLowerCase() ?? '');
+  return ['admin', 'recruiter', 'interviewer'].includes(role?.trim().toLowerCase() ?? '');
 }
 
 interface AuthContextValue {

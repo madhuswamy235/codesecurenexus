@@ -1,12 +1,12 @@
 "use client";
 
-import RequireAuth from "@/components/auth/RequireAuth";
+import ProtectedWorkspace from "@/components/common/ProtectedWorkspace";
 import InterviewDashboard from "@/components/dashboard/InterviewDashboard";
 
 export default function DashboardPage() {
   return (
-    <RequireAuth>
+    <ProtectedWorkspace eyebrow="Your overview">
       <InterviewDashboard />
-    </RequireAuth>
+    </ProtectedWorkspace>
   );
 }
