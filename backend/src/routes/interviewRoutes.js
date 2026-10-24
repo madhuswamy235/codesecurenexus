@@ -23,7 +23,7 @@ router.get('/invite/:token', getPublicInvite);
 
 // CRUD
 router.get('/', protect, listInterviews);
-router.post('/', protect, authorize('admin', 'recruiter', 'interviewer', 'candidate'), createInterview);
+router.post('/', protect, authorize('admin', 'recruiter', 'interviewer'), createInterview);
 router.get('/:id', protect, getInterview);
 router.put('/:id', protect, authorize('admin', 'recruiter', 'interviewer'), updateInterview);
 router.delete('/:id', protect, authorize('admin', 'recruiter'), deleteInterview);

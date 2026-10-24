@@ -10,17 +10,21 @@ import config from '@/config';
 const TOKEN_KEY = 'securenexus_token';
 
 export function getToken() {
-  return (
-    (typeof window !== 'undefined' && window.localStorage.getItem(TOKEN_KEY)) || ''
-  );
+  return (typeof window !== 'undefined' && window.sessionStorage.getItem(TOKEN_KEY)) || '';
 }
 
 export function setToken(token: string) {
-  if (typeof window !== 'undefined') window.localStorage.setItem(TOKEN_KEY, token);
+  if (typeof window !== 'undefined') {
+    window.sessionStorage.setItem(TOKEN_KEY, token);
+    window.localStorage.removeItem(TOKEN_KEY);
+  }
 }
 
 export function clearToken() {
-  if (typeof window !== 'undefined') window.localStorage.removeItem(TOKEN_KEY);
+  if (typeof window !== 'undefined') {
+    window.sessionStorage.removeItem(TOKEN_KEY);
+    window.localStorage.removeItem(TOKEN_KEY);
+  }
 }
 
 export interface ApiResponse<T = unknown> {

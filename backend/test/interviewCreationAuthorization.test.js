@@ -10,11 +10,11 @@ function getCreateRouteMiddleware() {
   return layer.route.stack.map((entry) => entry.handle);
 }
 
-test('all authenticated account roles pass interview creation authorization', async () => {
+test('only recruiter-side roles pass interview creation authorization', async () => {
   const [protect, authorize] = getCreateRouteMiddleware();
   assert.equal(protect.name, 'protect');
 
-  for (const role of ['admin', 'recruiter', 'interviewer', 'candidate']) {
+  for (const role of ['admin', 'recruiter', 'interviewer']) {
     let passedAuthorization = false;
     let statusCode;
     const response = {
@@ -34,6 +34,23 @@ test('all authenticated account roles pass interview creation authorization', as
     assert.equal(passedAuthorization, true, `${role} should pass create authorization`);
     assert.equal(statusCode, undefined);
   }
+
+  let candidatePassed = false;
+  let candidateStatus;
+  const candidateResponse = {
+    status(code) {
+      candidateStatus = code;
+      return this;
+    },
+    json() {
+      return this;
+    },
+  };
+  authorize({ userRole: 'candidate' }, candidateResponse, () => {
+    candidatePassed = true;
+  });
+  assert.equal(candidatePassed, false);
+  assert.equal(candidateStatus, 403);
 });
 
 test('interview creation route still rejects unauthenticated requests', async () => {

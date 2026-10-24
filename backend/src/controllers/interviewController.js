@@ -134,9 +134,12 @@ async function listInterviews(req, res, next) {
   }
 }
 
-/** POST /api/interviews — create for any authenticated account */
+/** POST /api/interviews — create a recruiter-owned interview */
 async function createInterview(req, res, next) {
   try {
+    if (!['admin', 'recruiter', 'interviewer'].includes(req.userRole)) {
+      return fail(res, 403, 'Only a recruiter or interviewer can create an interview');
+    }
     const {
       title, description, type, candidateId, interviewerId, candidateName, candidateEmail,
       scheduledAt, durationMinutes, tags, status, questions,
@@ -146,9 +149,7 @@ async function createInterview(req, res, next) {
     const allowedTypes = ['MCQ', 'CODING', 'LIVE', 'MIXED'];
     if (type && !allowedTypes.includes(type)) return fail(res, 400, 'Invalid interview type');
 
-    const recruiterId = req.userRole === 'candidate'
-      ? null
-      : req.userRole === 'recruiter' ? req.userId : req.userRole === 'admin' && req.body.recruiterId
+    const recruiterId = req.userRole === 'recruiter' ? req.userId : req.userRole === 'admin' && req.body.recruiterId
         ? req.body.recruiterId
         : req.userId;
 
