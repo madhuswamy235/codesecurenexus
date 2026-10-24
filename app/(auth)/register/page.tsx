@@ -1,198 +1,102 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useAuth, homeForRole } from "@/hooks/useAuth";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import { resolveDestination, sanitizeNext } from "@/lib/auth-nav";
 
-export default function RegisterPage() {
-
+function RegisterForm() {
   const { register } = useAuth();
   const router = useRouter();
-
+  const searchParams = useSearchParams();
+  const next = sanitizeNext(searchParams.get("next"));
+  const isInterviewInvite = next?.startsWith("/interview/join/") ?? false;
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleCreateAccount = async () => {
+  async function handleCreateAccount(event: React.FormEvent) {
+    event.preventDefault();
     setError("");
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
-      return;
-    }
-
+    if (!acceptedTerms) return setError("Please accept the terms and privacy policy to continue.");
+    if (password !== confirmPassword) return setError("Passwords do not match.");
+    if (password.length < 8) return setError("Password must be at least 8 characters.");
     setLoading(true);
     try {
-      const user = await register({ name: fullName, email, password, mobile });
-      const next = new URLSearchParams(window.location.search).get("next");
-      const target = next && next.startsWith("/") && !next.startsWith("//")
-        ? next
-        : homeForRole(user.role);
-      router.push(target);
+      const user = await register({ name: fullName.trim(), email: email.trim(), password, mobile: mobile.trim() });
+      router.push(resolveDestination(next, user.role));
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
-  };
+  }
+
+  const loginHref = next ? `/login?next=${encodeURIComponent(next)}` : "/login";
 
   return (
-
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-8">
-
-      <div className="w-full max-w-2xl rounded-3xl border border-slate-800 bg-slate-900 p-8">
-
-        <div className="text-center">
-
-          <h1 className="text-4xl font-bold text-cyan-400">
-            SecureNexus
-          </h1>
-
-          <p className="text-slate-400 mt-2">
-            Create Your AI Interview Account
-          </p>
-
+    <main className="min-h-screen bg-slate-950 px-4 py-10 text-white sm:px-6">
+      <div className="mx-auto w-full max-w-2xl">
+        <div className="mb-6 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-300">SecureNexus</p>
+          <h1 className="mt-3 text-3xl font-bold">Create your candidate account</h1>
+          <p className="mt-2 text-sm text-slate-400">It takes less than a minute to get ready for your interview.</p>
         </div>
 
-        {error && (
-          <div className="mt-6 rounded-lg border border-red-700 bg-red-900/40 p-3 text-sm text-red-200">
-            {error}
-          </div>
-        )}
+        <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-2xl sm:p-8">
+          {isInterviewInvite && (
+            <div className="mb-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4">
+              <p className="text-sm font-semibold text-emerald-100">Your interview link is saved</p>
+              <p className="mt-1 text-xs leading-5 text-emerald-100/70">After registration, you’ll return directly to this invitation and can join the lobby.</p>
+            </div>
+          )}
+          {error && <div role="alert" className="mb-6 rounded-xl border border-red-600/40 bg-red-500/10 p-4 text-sm text-red-200">{error}</div>}
 
-        <div className="grid grid-cols-2 gap-5 mt-8">
+          <form onSubmit={handleCreateAccount} className="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label htmlFor="register-name" className="text-sm font-medium text-slate-200">Full name</label>
+              <input id="register-name" value={fullName} onChange={(event) => setFullName(event.target.value)} className="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20" placeholder="Your full name" autoComplete="name" required />
+            </div>
+            <div>
+              <label htmlFor="register-email" className="text-sm font-medium text-slate-200">Email address</label>
+              <input id="register-email" value={email} onChange={(event) => setEmail(event.target.value)} type="email" className="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20" placeholder="you@example.com" autoComplete="email" required />
+            </div>
+            <div>
+              <label htmlFor="register-mobile" className="text-sm font-medium text-slate-200">Mobile number <span className="text-slate-500">(optional)</span></label>
+              <input id="register-mobile" value={mobile} onChange={(event) => setMobile(event.target.value)} className="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20" placeholder="Optional" autoComplete="tel" />
+            </div>
+            <div>
+              <label htmlFor="register-password" className="text-sm font-medium text-slate-200">Password</label>
+              <input id="register-password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} className="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20" placeholder="At least 8 characters" autoComplete="new-password" required />
+            </div>
+            <div>
+              <label htmlFor="register-confirm-password" className="text-sm font-medium text-slate-200">Confirm password</label>
+              <input id="register-confirm-password" type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} className="mt-2 w-full rounded-xl border border-slate-700 bg-slate-950 p-3 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20" placeholder="Repeat your password" autoComplete="new-password" required />
+            </div>
 
-          <div>
-
-            <label className="text-white">
-              Full Name
-            </label>
-
-            <input
-              value={fullName}
-              onChange={(e)=>setFullName(e.target.value)}
-              className="mt-2 w-full rounded-xl bg-slate-800 border border-slate-700 p-3 text-white"
-              placeholder="Enter full name"
-            />
-
-          </div>
-
-          <div>
-
-            <label className="text-white">
-              Email
-            </label>
-
-            <input
-              value={email}
-              onChange={(e)=>setEmail(e.target.value)}
-              type="email"
-              className="mt-2 w-full rounded-xl bg-slate-800 border border-slate-700 p-3 text-white"
-              placeholder="Enter email"
-            />
-
-          </div>
-
-          <div>
-
-            <label className="text-white">
-              Mobile Number
-            </label>
-
-            <input
-              value={mobile}
-              onChange={(e)=>setMobile(e.target.value)}
-              className="mt-2 w-full rounded-xl bg-slate-800 border border-slate-700 p-3 text-white"
-              placeholder="Enter mobile"
-            />
-
-          </div>
-
-          <div>
-
-            <label className="text-white">
-              Password
-            </label>
-
-            <input
-              type="password"
-              value={password}
-              onChange={(e)=>setPassword(e.target.value)}
-              className="mt-2 w-full rounded-xl bg-slate-800 border border-slate-700 p-3 text-white"
-              placeholder="Create password"
-            />
-
-          </div>
-          <div>
-
-            <label className="text-white">
-              Confirm Password
-            </label>
-
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="mt-2 w-full rounded-xl bg-slate-800 border border-slate-700 p-3 text-white"
-              placeholder="Confirm password"
-            />
-
-          </div>
-
+            <div className="space-y-4 sm:col-span-2">
+              <label htmlFor="terms" className="flex items-start gap-3 text-sm text-slate-300">
+                <input id="terms" type="checkbox" checked={acceptedTerms} onChange={(event) => setAcceptedTerms(event.target.checked)} className="mt-1 h-4 w-4 accent-cyan-400" />
+                <span>I agree to the Terms & Conditions and Privacy Policy.</span>
+              </label>
+              <button type="submit" disabled={loading} className="w-full rounded-xl bg-cyan-500 py-3 font-bold text-slate-950 hover:bg-cyan-400 disabled:opacity-60">
+                {loading ? "Creating your account…" : isInterviewInvite ? "Create account and continue" : "Create account"}
+              </button>
+              <p className="text-center text-sm text-slate-400">Already have an account? <Link href={loginHref} className="font-semibold text-cyan-300 hover:underline">Sign in and continue</Link></p>
+            </div>
+          </form>
         </div>
-
-        <div className="mt-8 space-y-4">
-          <div className="flex items-center gap-3">
-
-            <input
-              type="checkbox"
-              id="terms"
-              className="h-4 w-4"
-            />
-
-            <label
-              htmlFor="terms"
-              className="text-slate-300"
-            >
-              I agree to the Terms & Conditions and Privacy Policy.
-            </label>
-
-          </div>
-
-          <button
-            onClick={handleCreateAccount}
-            disabled={loading}
-            className="w-full rounded-xl bg-green-600 py-3 font-bold hover:bg-green-700 disabled:opacity-60"
-          >
-            {loading ? "Creating account..." : "Create Account"}
-          </button>
-
-          <button
-            className="w-full rounded-xl border border-slate-700 bg-slate-800 py-3 font-semibold hover:bg-slate-700"
-          >
-            Continue with Google
-          </button>
-
-          <p className="text-center text-slate-400">
-            Already have an account?{" "}
-            <Link href="/login" className="text-cyan-400 hover:underline">
-              Login
-            </Link>
-          </p>
-
-        </div>
-
       </div>
-
-    </div>
-
+    </main>
   );
+}
+
+export default function RegisterPage() {
+  return <Suspense fallback={null}><RegisterForm /></Suspense>;
 }

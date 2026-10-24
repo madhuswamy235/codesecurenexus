@@ -176,7 +176,8 @@ export default function InterviewJoinPage({ params }: { params: Promise<{ sessio
     <div className="min-h-screen bg-slate-950 px-6 py-10 text-white">
       <div className="mx-auto max-w-2xl rounded-2xl border border-slate-800 bg-slate-900 p-8">
         <p className="text-xs uppercase tracking-[0.25em] text-emerald-300">SecureNexus</p>
-        <h1 className="mt-3 text-3xl font-bold">Candidate interview invitation</h1>
+        <h1 className="mt-3 text-3xl font-bold">You’re invited to an interview</h1>
+        <p className="mt-2 text-sm text-slate-400">Review the details below, then sign in or create a free candidate account to join.</p>
 
         {error && <div role="alert" className="mt-6 rounded-lg border border-red-600/30 bg-red-600/10 p-4 text-red-200">{error}</div>}
 
@@ -193,9 +194,9 @@ export default function InterviewJoinPage({ params }: { params: Promise<{ sessio
 
             {!ended && (
               <section className="mt-6 rounded-xl border border-slate-700 bg-slate-950 p-4">
-                <h2 className="font-semibold text-cyan-200">Join the interview</h2>
+                <h2 className="font-semibold text-cyan-200">Ready to join?</h2>
                 <p className="mt-2 text-xs leading-5 text-slate-400">
-                  Sign in with the invited candidate account and select Join interview lobby. Wait here until the recruiter starts the session; then allow camera and microphone access and select Start camera in the live room. Browser binding is an application check, not hardware attestation.
+                  Use the invited candidate email. If you need an account, create one here—your invitation link will be saved and you’ll return to this page automatically after registration.
                 </p>
                 {session._id && interview._id && (
                   <WindowsProximityCompanion
@@ -218,13 +219,13 @@ export default function InterviewJoinPage({ params }: { params: Promise<{ sessio
                 disabled={joining || !interview || !session}
                 className="mt-8 w-full rounded-xl bg-emerald-600 px-4 py-3 font-semibold hover:bg-emerald-500 disabled:opacity-60"
               >
-                {joining ? "Joining..." : isAuthenticated ? "Join interview lobby" : "Sign in to join"}
+                {joining ? "Joining..." : isAuthenticated ? "Join interview lobby" : "Sign in to continue"}
               </button>
             )}
 
             {!isAuthenticated && !ended && (
               <p className="mt-4 text-center text-sm text-slate-400">
-                New candidate? <Link href={registerPath} className="text-cyan-300 hover:underline">Create an account</Link>
+                New candidate? <Link href={registerPath} className="font-semibold text-emerald-300 hover:underline">Create a candidate account</Link>
                 {" · "}
                 <Link href={loginPath} className="text-cyan-300 hover:underline">Sign in</Link>
               </p>

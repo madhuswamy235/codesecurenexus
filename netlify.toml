@@ -7,5 +7,9 @@
   NPM_FLAGS = "--legacy-peer-deps"
 
 # Netlify detects the Next.js App Router and applies its Next.js runtime
-# automatically. Keep the API and Socket.IO services on the separate backend
-# host configured in render.yaml.
+# automatically. In the Netlify site settings, configure these build-time
+# variables before deploying:
+#   NEXT_PUBLIC_API_URL=https://<render-service>.onrender.com/api
+#   NEXT_PUBLIC_SOCKET_URL=https://<render-service>.onrender.com
+# The backend's FRONTEND_URL/TRUSTED_CORS_ORIGINS must contain the exact
+# Netlify origin, then the backend must be restarted.

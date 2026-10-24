@@ -47,6 +47,13 @@ async function request<T = unknown>(
 ): Promise<ApiResponse<T>> {
   const { method = 'GET', body, token = true, headers = {} } = options;
 
+  if (!config.isConfigured && process.env.NODE_ENV === 'production') {
+    throw new ApiError(
+      'The frontend API is not configured. Set NEXT_PUBLIC_API_URL in the Netlify site environment and redeploy.',
+      503
+    );
+  }
+
   const requestHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
     ...headers,
