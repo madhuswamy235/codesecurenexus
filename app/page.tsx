@@ -2,14 +2,14 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2, Code2, FileText, ShieldCheck, Video } from "lucide-react";
 
 const steps = [
-  { number: "01", title: "Create an interview", text: "Add the role, candidate details, questions, and interview duration." },
-  { number: "02", title: "Share one link", text: "Your candidate receives a simple invitation link and joins from any browser." },
-  { number: "03", title: "Meet and evaluate", text: "Use the live room for video, chat, coding, assessments, and structured notes." },
+  { number: "01", title: "Sign in", text: "Open your workspace with one secure account and see everything from the dashboard." },
+  { number: "02", title: "Meet on Google Meet", text: "Open Google Meet from the Interview area and share the meeting link with attendees." },
+  { number: "03", title: "Work and review", text: "Keep collaborative whiteboarding, Monaco coding, learning, performance, and reports in one place." },
 ];
 
 const capabilities = [
-  { icon: Video, title: "Meet live", text: "A focused interview room with camera, microphone, chat, and participant status." },
-  { icon: Code2, title: "Work together", text: "Collaborative coding, questions, whiteboard, and a shared timer in one workspace." },
+  { icon: Video, title: "Meet live", text: "Open Google Meet in one click and share the meeting link with your attendees." },
+  { icon: Code2, title: "Work together", text: "Keep the Monaco coding editor and collaborative whiteboard ready for practical work." },
   { icon: ShieldCheck, title: "Review fairly", text: "Optional browser and device signals help recruiters review the session with context." },
   { icon: FileText, title: "Get a report", text: "Keep interview notes, scores, security events, and recommendations together." },
 ];

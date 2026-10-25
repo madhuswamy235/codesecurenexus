@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { Play, Save, Download } from "lucide-react";
+import Editor from "@monaco-editor/react";
 import api from "@/lib/api";
 import { generateSchematicOps } from "@/lib/codeSchematic";
 import type { InterviewRoomController } from "@/hooks/useInterviewRoom";
@@ -209,12 +210,22 @@ export default function LiveCodeEditor({
         </div>
       </div>
 
-      <textarea
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-        spellCheck={false}
-        className="w-full h-96 bg-black text-green-400 font-mono p-4 rounded-lg border border-gray-700 outline-none focus:border-cyan-500"
-      />
+      <div className="overflow-hidden rounded-lg border border-slate-700">
+        <Editor
+          height="420px"
+          theme="vs-dark"
+          language={language}
+          value={code}
+          onChange={(value) => setCode(value ?? "")}
+          options={{
+            minimap: { enabled: false },
+            fontSize: 14,
+            padding: { top: 16, bottom: 16 },
+            automaticLayout: true,
+            scrollBeyondLastLine: false,
+          }}
+        />
+      </div>
 
       {runInfo && <p className="mt-3 text-xs text-slate-400">{runInfo}</p>}
       {msg && <p className="mt-2 text-sm text-emerald-400">{msg}</p>}

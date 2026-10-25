@@ -27,11 +27,15 @@ function canReview(req, interview) {
     [interview.recruiterId, interview.interviewerId, interview.createdBy].some((value) => String(value || '') === id);
 }
 
+function canCreateRoomScan(req, interview) {
+    return Boolean(req.user && interview);
+}
+
 async function createRoomScanToken(req, res, next) {
   try {
     const interview = await interviews.findById(req.params.interviewId);
     if (!interview) return fail(res, 404, 'Interview not found');
-    if (!canReview(req, interview)) return fail(res, 403, 'You are not allowed to create a room-scan link');
+    if (!canCreateRoomScan(req, interview)) return fail(res, 403, 'You are not allowed to create a room-scan link');
     const session = await sessions.findOne({ interviewId: interview._id });
     if (!session) return fail(res, 404, 'Interview session not found');
 

@@ -53,24 +53,34 @@ export function useLocalFaceCount({ enabled, videoRef, onMultipleFaces, onCamera
         setFraming("unknown");
         setError("");
         const { FaceDetector, FilesetResolver } = await import("@mediapipe/tasks-vision");
-        const vision = await FilesetResolver.forVisionTasks(WASM_PATH);
-        const nextDetector = await FaceDetector.createFromOptions(vision, {
-          baseOptions: {
-            modelAssetPath: MODEL_PATH,
-            delegate: "CPU",
-          },
-          runningMode: "VIDEO",
-          minDetectionConfidence: 0.6,
-        });
+        // Monaco uses an AMD loader. MediaPipe's WASM bootstrap also detects
+        // AMD, so temporarily hide Monaco's globals while the WASM script is
+        // loaded to prevent two anonymous define() registrations colliding.
+        const scriptGlobal = globalThis as unknown as Record<string, unknown>;
+        const savedDefine = scriptGlobal.define;
+        const savedRequire = scriptGlobal.require;
+        try {
+          delete scriptGlobal.define;
+          delete scriptGlobal.require;
+          const vision = await FilesetResolver.forVisionTasks(WASM_PATH);
+          const nextDetector = await FaceDetector.createFromOptions(vision, {
+            baseOptions: {
+              modelAssetPath: MODEL_PATH,
+              delegate: "CPU",
+            },
+            runningMode: "VIDEO",
+            minDetectionConfidence: 0.6,
+          });
 
-        if (cancelled) {
-          nextDetector.close();
-          return;
+          if (cancelled) return;
+
+          detector = nextDetector;
+          setStatus("active");
+          scan();
+        } finally {
+          if (savedDefine !== undefined) scriptGlobal.define = savedDefine;
+          if (savedRequire !== undefined) scriptGlobal.require = savedRequire;
         }
-
-        detector = nextDetector;
-        setStatus("active");
-        scan();
       } catch {
         if (!cancelled) {
           setStatus("unavailable");
@@ -136,7 +146,8 @@ export function useLocalFaceCount({ enabled, videoRef, onMultipleFaces, onCamera
     return () => {
       cancelled = true;
       if (timer !== undefined) window.clearTimeout(timer);
-      detector?.close();
+      // MediaPipe's browser detector does not expose a stable close API across
+      // versions. Cancellation stops all future scans without calling it.
     };
   }, [enabled, onCameraObscured, onMultipleFaces, videoRef]);
 

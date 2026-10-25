@@ -67,7 +67,7 @@ function LoginForm() {
           </form>
 
           <div className="mt-6 border-t border-slate-800 pt-6 text-center text-sm text-slate-400">
-            <p>New here? <Link href={registerHref} className="font-semibold text-cyan-300 hover:underline">Create a candidate account</Link></p>
+            <p>New here? <Link href={registerHref} className="font-semibold text-cyan-300 hover:underline">Create an account</Link></p>
             <div className="mt-4 flex justify-center gap-4 text-xs">
               <Link href={next ? `/forgot-password?next=${encodeURIComponent(next)}` : "/forgot-password"} className="hover:text-slate-200">Forgot password?</Link>
               <Link href="/" className="hover:text-slate-200">Back home</Link>

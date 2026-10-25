@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, BarChart3, CheckCircle2, FileText, Plus, Radio, ShieldCheck, Sparkles, Video } from "lucide-react";
+import { ArrowRight, BarChart3, CheckCircle2, FileText, Radio, ShieldCheck, Video } from "lucide-react";
 import api from "@/lib/api";
-import { canCreateInterviewsForRole, useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Stats {
   interviews: { total: number; scheduled: number; live: number; completed: number };
@@ -27,7 +27,6 @@ function StatusBadge({ status }: { status: string }) {
 
 export default function InterviewDashboard() {
   const { user } = useAuth();
-  const canCreate = canCreateInterviewsForRole(user?.role);
   const [stats, setStats] = useState<Stats | null>(null);
   const [interviews, setInterviews] = useState<InterviewRow[]>([]);
   const [apiStatus, setApiStatus] = useState<"loading" | "connected" | "error">("loading");
@@ -51,7 +50,7 @@ export default function InterviewDashboard() {
 
   return (
     <div className="space-y-8">
-      <section className="flex flex-col justify-between gap-5 rounded-3xl bg-slate-950 px-6 py-7 text-white shadow-xl shadow-slate-900/10 sm:flex-row sm:items-center sm:px-8"><div><p className="text-sm text-emerald-300">{greeting}</p><h1 className="mt-2 text-3xl font-bold tracking-tight">Your interview overview</h1><p className="mt-2 max-w-xl text-sm leading-6 text-slate-400">A clear snapshot of your interviews, results, and next actions.</p></div>{canCreate ? <Link href="/recruiter/interviews" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-400"><Plus size={17} /> Create interview</Link> : <div className="rounded-xl border border-white/10 px-4 py-3 text-sm text-slate-300">Candidate workspace</div>}</section>
+      <section className="flex flex-col justify-between gap-5 rounded-3xl bg-slate-950 px-6 py-7 text-white shadow-xl shadow-slate-900/10 sm:flex-row sm:items-center sm:px-8"><div><p className="text-sm text-emerald-300">{greeting}</p><h1 className="mt-2 text-3xl font-bold tracking-tight">Your workspace at a glance</h1><p className="mt-2 max-w-xl text-sm leading-6 text-slate-400">Use the menu to check your performance, review reports, keep learning, or join a Google Meet.</p></div><Link href="/interview" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-400"><Video size={17} /> Open interview</Link></section>
 
       {apiStatus === "error" && <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">We could not load the latest workspace data. Check your connection and refresh.</div>}
       {apiStatus === "connected" && <p className="flex items-center gap-2 text-xs text-slate-500"><CheckCircle2 size={15} className="text-emerald-500" /> Connected to {stats?.storageMode === "file" ? "development storage" : "your SecureNexus data"}</p>}
@@ -64,11 +63,11 @@ export default function InterviewDashboard() {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1.35fr_.65fr]">
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="flex items-center justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Activity</p><h2 className="mt-2 text-xl font-bold">Recent interviews</h2></div>{canCreate && <Link href="/recruiter/interviews" className="text-sm font-semibold text-emerald-700 hover:text-emerald-600">View all <ArrowRight size={15} className="ml-1 inline" /></Link>}</div><div className="mt-6 divide-y divide-slate-100">{interviews.length === 0 ? <div className="rounded-xl bg-slate-50 p-5 text-sm text-slate-500">{canCreate ? "No interviews yet. Create your first interview to get started." : "Your assigned interviews will appear here."}</div> : interviews.slice(0, 5).map((interview) => <div key={interview._id} className="flex flex-col gap-3 py-4 first:pt-0 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-semibold text-slate-800">{interview.title}</p><p className="mt-1 text-xs text-slate-500">{interview.candidate?.name || "Candidate"} · {interview.type || "Live interview"}</p></div><div className="flex items-center gap-3"><StatusBadge status={interview.status || "scheduled"} /><Link href={`/interview?id=${encodeURIComponent(interview._id)}`} className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:border-emerald-300 hover:text-emerald-700">Open</Link></div></div>)}</div></div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="flex items-center justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Activity</p><h2 className="mt-2 text-xl font-bold">Recent interviews</h2></div><Link href="/interview" className="text-sm font-semibold text-emerald-700 hover:text-emerald-600">Open interview <ArrowRight size={15} className="ml-1 inline" /></Link></div><div className="mt-6 divide-y divide-slate-100">{interviews.length === 0 ? <div className="rounded-xl bg-slate-50 p-5 text-sm text-slate-500">Your recent interview activity will appear here.</div> : interviews.slice(0, 5).map((interview) => <div key={interview._id} className="flex flex-col gap-3 py-4 first:pt-0 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-semibold text-slate-800">{interview.title}</p><p className="mt-1 text-xs text-slate-500">{interview.type || "Interview"}</p></div><div className="flex items-center gap-3"><StatusBadge status={interview.status || "scheduled"} /><Link href={`/interview?id=${encodeURIComponent(interview._id)}`} className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:border-emerald-300 hover:text-emerald-700">Open</Link></div></div>)}</div></div>
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">This week</p><h2 className="mt-2 text-xl font-bold">Progress at a glance</h2><div className="mt-6 space-y-4"><Progress icon={Video} label="Interviews created" value={stats?.weekly.interviewsCreated || 0} /><Progress icon={FileText} label="Questions scored" value={stats?.weekly.questionsScored || 0} /><Progress icon={ShieldCheck} label="Security events" value={stats?.weekly.criticalEvents || 0} /></div><Link href="/interview/performance" className="mt-6 block rounded-xl bg-slate-50 px-4 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700">View performance</Link></div>
       </section>
 
-      <section><div className="flex items-end justify-between"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Shortcuts</p><h2 className="mt-2 text-xl font-bold">Go where you need to go</h2></div></div><div className="mt-4 grid gap-4 md:grid-cols-3"><Shortcut href={canCreate ? "/recruiter/interviews" : "/interview"} icon={canCreate ? Plus : Video} title={canCreate ? "Create an interview" : "Open interview room"} text={canCreate ? "Set up a candidate invitation and start a session." : "Open your assigned live interview."} /><Shortcut href="/learning" icon={Sparkles} title="Learning center" text="Practice coding, DSA, MCQs, and whiteboard work." /><Shortcut href="/interview/report" icon={FileText} title="Reports" text="Review completed interviews and recommendations." /></div></section>
+      <section><div className="flex items-end justify-between"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Quick access</p><h2 className="mt-2 text-xl font-bold">Everything in one place</h2></div></div><div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><Shortcut href="/interview" icon={Video} title="Interview" text="Join or start a Google Meet." /><Shortcut href="/interview/performance" icon={BarChart3} title="Performance" text="Track scores and skill progress." /><Shortcut href="/interview/report" icon={FileText} title="Reports" text="Review completed interview reports." /><Shortcut href="/learning" icon={Radio} title="Learning" text="Practice and build your skills." /></div></section>
     </div>
   );
 }

@@ -21,6 +21,7 @@ interface SessionDetails {
     nearbyDeviceCount?: number;
     checkedAt?: string;
   } | null;
+  roomScanStatus?: "NOT_REQUESTED" | "CREATED" | "UPLOADED" | "REVIEWED";
 }
 
 interface InterviewDetails {
@@ -143,6 +144,10 @@ export default function InterviewJoinPage({ params }: { params: Promise<{ sessio
       return;
     }
     if (!interview || !session) return;
+    if (!session.roomScanStatus || !["UPLOADED", "REVIEWED"].includes(session.roomScanStatus)) {
+      setError("Complete the room scan first. Ask the interviewer for the one-time room-scan link, show the entire room, and upload it before joining.");
+      return;
+    }
 
     setJoining(true);
     setError("");
@@ -200,6 +205,10 @@ export default function InterviewJoinPage({ params }: { params: Promise<{ sessio
                   Use the invited candidate email. If you need an account, create one here—your invitation link will be saved and you’ll return to this page automatically after registration.
                 </p>
                 <InterviewReadinessCheck role="candidate" />
+                <div className={`mt-4 rounded-xl border p-4 text-sm ${["UPLOADED", "REVIEWED"].includes(session.roomScanStatus || "") ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-100" : "border-amber-500/30 bg-amber-500/10 text-amber-100"}`}>
+                  <p className="font-semibold">Room scan: {session.roomScanStatus || "Not completed"}</p>
+                  <p className="mt-1 text-xs leading-5 opacity-80">{["UPLOADED", "REVIEWED"].includes(session.roomScanStatus || "") ? "The room scan is uploaded. You can continue after the camera and microphone check." : "You must use the one-time room-scan link from the interviewer, show the entire room, and upload the 30-second recording before joining."}</p>
+                </div>
                 {session._id && interview._id && (
                   <WindowsProximityCompanion
                     sessionId={session._id}
@@ -218,7 +227,7 @@ export default function InterviewJoinPage({ params }: { params: Promise<{ sessio
             ) : (
               <button
                 onClick={() => void handleJoin()}
-                disabled={joining || !interview || !session}
+                disabled={joining || !interview || !session || !["UPLOADED", "REVIEWED"].includes(session.roomScanStatus || "")}
                 className="mt-8 w-full rounded-xl bg-emerald-600 px-4 py-3 font-semibold hover:bg-emerald-500 disabled:opacity-60"
               >
                 {joining ? "Joining..." : isAuthenticated ? "Join interview lobby" : "Sign in to continue"}

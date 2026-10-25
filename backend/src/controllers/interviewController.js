@@ -3,6 +3,7 @@ const Interview = require('../models/Interview');
 const InterviewSession = require('../models/InterviewSession');
 const SecurityEvent = require('../models/SecurityEvent');
 const User = require('../models/User');
+const Question = require('../models/Question');
 const { collection } = require('../storage/storage');
 const { ok, created, fail } = require('../utils/response');
 const { writeAudit } = require('../utils/audit');
@@ -11,6 +12,7 @@ const interviews = collection('interviews', Interview);
 const sessions = collection('sessions', InterviewSession);
 const securityEvents = collection('securityevents', SecurityEvent);
 const users = collection('users', User);
+const questionsStore = collection('questions', Question);
 
 function newRoomCode() {
   return crypto.randomBytes(3).toString('hex').toUpperCase();
@@ -56,6 +58,7 @@ async function getPublicInvite(req, res, next) {
         status: session.status,
         startedAt: session.startedAt || null,
         deviceIntegrity: session.deviceIntegrity || null,
+        roomScanStatus: session.roomScanStatus || 'NOT_REQUESTED',
       },
     });
   } catch (err) {
@@ -142,7 +145,7 @@ async function createInterview(req, res, next) {
     }
     const {
       title, description, type, candidateId, interviewerId, candidateName, candidateEmail,
-      scheduledAt, durationMinutes, tags, status, questions,
+      scheduledAt, durationMinutes, tags, status, questions: requestedQuestions,
     } = req.body || {};
 
     if (!title || !String(title).trim()) return fail(res, 400, 'title is required');
@@ -209,6 +212,24 @@ async function createInterview(req, res, next) {
       },
     });
 
+    const questionRows = Array.isArray(requestedQuestions)
+      ? requestedQuestions.filter((question) => question && ['MCQ', 'CODING', 'WRITTEN'].includes(question.type) && String(question.text || '').trim())
+      : [];
+    if (questionRows.length) {
+      await Promise.all(questionRows.map((question) => questionsStore.insertOne({
+        interviewId: interview._id,
+        type: question.type,
+        text: String(question.text).trim(),
+        options: Array.isArray(question.options) ? question.options : [],
+        correctOption: typeof question.correctOption === 'number' ? question.correctOption : -1,
+        language: question.language || 'javascript',
+        starterCode: question.starterCode || '',
+        testCases: Array.isArray(question.testCases) ? question.testCases : [],
+        maxScore: Number(question.maxScore) || 10,
+        tags: Array.isArray(question.tags) ? question.tags : [],
+      })));
+    }
+
     const baseUrl = (process.env.APP_BASE_URL || process.env.FRONTEND_URL || 'http://localhost:3000')
       .split(',')
       .map((value) => String(value).trim())
@@ -223,7 +244,7 @@ async function createInterview(req, res, next) {
       joinLink,
       sessionStatus: 'WAITING_FOR_CANDIDATE',
       status: 'WAITING_FOR_CANDIDATE',
-      questions: Array.isArray(questions) ? questions : [],
+      questions: questionRows,
       candidate: candidateRecord ? { _id: candidateRecord._id, name: candidateRecord.name, email: candidateRecord.email } : null,
     }, 'Interview created');
   } catch (err) {

@@ -10,6 +10,8 @@ import AssessmentMcq from "./AssessmentMcq";
 import AssessmentCoding from "./AssessmentCoding";
 import AssessmentWritten from "./AssessmentWritten";
 import type { InterviewRoomController } from "@/hooks/useInterviewRoom";
+import { useInterviewRoom } from "@/hooks/useInterviewRoom";
+import InterviewIntegrityMonitor from "@/components/interview/InterviewIntegrityMonitor";
 
 /**
  * AssessmentRunner — drives the REAL candidate assessment workflow.
@@ -37,6 +39,7 @@ export default function AssessmentRunner({
   room?: InterviewRoomController;
 }) {
   const router = useRouter();
+  const assessmentRoom = useInterviewRoom({ interviewId });
   const [loading, setLoading] = useState(true);
   const [interview, setInterview] = useState<any>(null);
   const [session, setSession] = useState<any>(null);
@@ -235,6 +238,10 @@ export default function AssessmentRunner({
             </div>
           </div>
         )}
+
+        <div className="mt-6">
+          <InterviewIntegrityMonitor room={room || assessmentRoom} />
+        </div>
 
         <div className="mt-6 flex gap-3">
           {tabs.map((t) => (

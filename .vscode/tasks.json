@@ -1,0 +1,26 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run SecureNexus demo",
+			"type": "shell",
+			"command": "npm run dev",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run SecureNexus backend demo",
+			"type": "shell",
+			"command": "npm run dev",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run SecureNexus API demo",
+			"type": "shell",
+			"command": "npm run dev --prefix backend",
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}
